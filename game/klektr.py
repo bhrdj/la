@@ -13,15 +13,19 @@ def remove_quietly(lst,element):
     except:
         pass
 
-def move(k, yx):
+def move(k, yx, hgt, wdt):
     if k=='KEY_UP':
-        yx[0] = yx[0] - 1    
+        yx[0] = yx[0] - 1
     elif k=='KEY_DOWN':
-        yx[0] = yx[0] + 1    
+        yx[0] = yx[0] + 1
     elif k=='KEY_LEFT':
         yx[1] = yx[1] - 1
     elif k=='KEY_RIGHT':
-        yx[1] = yx[1] + 1    
+        yx[1] = yx[1] + 1
+    if yx[0] >= hgt: yx[0] = 1
+    elif yx[0] <= 0: yx[0] = hgt-1
+    if yx[1] >= wdt: x[1] = 1
+    elif yx[1] <= 0: yx[1] = wdt-1
     return yx
 
 def main(my_screen):
@@ -30,26 +34,31 @@ def main(my_screen):
     yx = [hgt//2, 0] #wdt//2]
     akson = 'ກຂຄງຈສຊຍດຕຖທນບປຜຝພຟມຢຣລວຫອຮ'
     yx_akson = {}
-    board0 = [(i,j) for i in range(2,hgt-1) for j in range(2,wdt-2)]
+    board0 = [[i,j] for i in range(2,hgt-1) for j in range(2,wdt-2)]
     for ak in akson:
         yx_akson[ak] = random.choice(board0)
         for i in [-1,0,1]:
             for j in [-1,0,1]:
                 remove_quietly(board0,(i,j))
-    
+
     c.curs_set(0)
     while True:
         my_screen.clear()
+
+        if yx in yx_akson.values():
+            my_screen.addstr(hgt//2, wdt//2, 'b')
+            yx_akson.pop('key', None)
         for ak in yx_akson:
             my_screen.addstr(*yx_akson[ak], ak)
         try:
-            my_screen.addstr(*yx, star)   
+            my_screen.addstr(*yx, star)
         except Exception as err:
             sys.stdout.write('Cursor probably went off-screen')
             return None
+
         my_screen.refresh()
         k = my_screen.getkey()
-        yx = move(k, yx)
+        yx = move(k, yx, hgt, wdt)
         if k=='q': return None
-        
+
 c.wrapper(main)
