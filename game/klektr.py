@@ -28,20 +28,25 @@ def move(k, yx, hgt, wdt):
     elif yx[1] <= 0: yx[1] = wdt-1
     return yx
 
-def main(my_screen):
-    star = '*'
-    hgt, wdt = my_screen.getmaxyx()
-    yx = [hgt//2, 0] #wdt//2]
-    akson = 'ກຂຄງຈສຊຍດຕຖທນບປຜຝພຟມຢຣລວຫອຮ'
-    yx_akson = {}
+def get_yx_akson(akson, hgt, wdt):
     board0 = [[i,j] for i in range(2,hgt-1) for j in range(2,wdt-2)]
+    yx_akson = {}
     for ak in akson:
         yx_akson[ak] = random.choice(board0)
         for i in [-1,0,1]:
             for j in [-1,0,1]:
                 remove_quietly(board0,(i,j))
+    return yx_akson
 
+def main(my_screen):
     c.curs_set(0)
+    star = '*'
+    akson = 'ກຂຄງຈສຊຍດຕຖທນບປຜຝພຟມຢຣລວຫອຮ'
+    hgt, wdt = my_screen.getmaxyx()
+    yx = [hgt//2, 0] #wdt//2]
+    yx_akson = get_yx_akson(akson, hgt, wdt)
+
+    hgt, wdt = my_screen.getmaxyx() # This should be checked and reset during each loop
     while True:
         my_screen.clear()
 
