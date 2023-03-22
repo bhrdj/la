@@ -24,7 +24,7 @@ def move(k, yx, hgt, wdt):
         yx[1] = yx[1] + 1
     if yx[0] >= hgt: yx[0] = 1
     elif yx[0] <= 0: yx[0] = hgt-1
-    if yx[1] >= wdt: x[1] = 1
+    if yx[1] >= wdt: yx[1] = 1
     elif yx[1] <= 0: yx[1] = wdt-1
     return yx
 
@@ -50,10 +50,10 @@ def main(my_screen):
     while True:
         my_screen.clear()
 
-        if yx in yx_akson.values():
-            my_screen.addstr(hgt//2, wdt//2, 'b')
+        if yx in yx_akson.values(): # if I hit the challenge, get the challenge prompt
+            my_screen.addstr(hgt//2, wdt//2, 'bbbbbbbbbb')
             yx_akson.pop('key', None)
-        for ak in yx_akson:
+        for ak in yx_akson: # draw the akson constellation
             my_screen.addstr(*yx_akson[ak], ak)
         try:
             my_screen.addstr(*yx, star)
