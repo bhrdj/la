@@ -1,8 +1,7 @@
-# nation kata idea 2023-02-11
+# Lao language game 
+# Solve puzzles to collect points and prizes
 
-# make a shooting star across the screen
-
-import curses as c, random, sys
+import curses as c, pandas as pd, random, sys
 
 def eprint(*args, **kwargs):
     print(*args, file=sys.stdout, **kwargs)
@@ -38,6 +37,16 @@ def get_yx_akson(akson, hgt, wdt):
                 remove_quietly(board0,(i,j))
     return yx_akson
 
+def quiz_box(ak, hgt, wdt, my_screen):
+    my_screen.clear()
+    box1 = c.newwin((hgt*5)//6,wdt//2,hgt//12,wdt//4)
+    box1.box()
+    my_screen.refresh()
+    box1.refresh()
+    k = my_screen.getkey()
+    return k=='t'
+
+
 def main(my_screen):
     c.curs_set(0)
     star = '*'
@@ -46,24 +55,29 @@ def main(my_screen):
     yx = [hgt//2, 0] #wdt//2]
     yx_akson = get_yx_akson(akson, hgt, wdt)
 
-    hgt, wdt = my_screen.getmaxyx() # This should be checked and reset during each loop
+    hgt, wdt = my_screen.getmaxyx() # Should be checked and reset during each loop?
     while True:
         my_screen.clear()
-
+        correct = None
         if yx in yx_akson.values(): # if I hit the challenge, get the challenge prompt
-            my_screen.addstr(hgt//2, wdt//2, 'bbbbbbbbbb')
-            yx_akson.pop('key', None)
-        for ak in yx_akson: # draw the akson constellation
+            correct = quiz_box(ak, hgt, wdt, my_screen)
+            my_screen.clear()
+            yx_akson = {k:v for k, v in yx_akson.items() if v!=yx}
+
+        for ak in yx_akson:         # draw the akson constellation
             my_screen.addstr(*yx_akson[ak], ak)
-        try:
+        try:                        # show the cursor/avatar
             my_screen.addstr(*yx, star)
         except Exception as err:
             sys.stdout.write('Cursor probably went off-screen')
             return None
-
+        if correct is not None:     # draw the celebration message
+            my_screen.addstr(*yx, "CORRECT" if correct else "INCORRECT")
         my_screen.refresh()
         k = my_screen.getkey()
         yx = move(k, yx, hgt, wdt)
         if k=='q': return None
 
 c.wrapper(main)
+
+
